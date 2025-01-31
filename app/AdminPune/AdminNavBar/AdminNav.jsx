@@ -49,7 +49,9 @@ const AdminNav = () => {
             </button>
           </div>
           <div className={`lg:flex items-center justify-center flex-1 ${isNavOpen ? 'block' : 'hidden'}`}>
-            
+            <Link href="../AdminPune/Home" className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase">
+            Home
+            </Link>
             <Link href="../AdminPune/EmpReport" className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase">
             Emplyee Report
             </Link>
