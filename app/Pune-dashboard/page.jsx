@@ -1,11 +1,10 @@
 'use client'
 import React from 'react';
-import NavBar from '../Pune-dashboard/NavBar/NavBar';
-
+import Dashboard from './Dashboard/page';
 const PuneDashboard = () => {
   return (
     <div className='h-screen w-full bg-white'>
-      <NavBar />
+      <Dashboard/>
     </div>
   );
 };

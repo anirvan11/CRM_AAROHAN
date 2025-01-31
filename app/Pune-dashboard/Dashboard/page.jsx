@@ -7,7 +7,7 @@ import EnquiriesOverview from '@/app/components/EnquiriesOverview';
 
 const Dashboard = () => {
   return (
-    <div className="h-screen w-full bg-white overflow-hidden relative">
+    <div className="h-screen w-full bg-white overflow-auto relative">
       <NavBar />
       <div className="flex justify-end h-full">
       <div className="flex-1 p-4">

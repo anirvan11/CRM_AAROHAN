@@ -41,6 +41,10 @@ if (userDocSnap.exists()) {
   } else if (userData.Role === "Employee" && userData.Branch === "Pune") {
     router.push('/Pune-dashboard');
     console.log("Redirecting to Pune dashboard...");
+  } 
+  else if (userData.Role === "Admin" && userData.Branch === "Pune") {
+    router.push('/AdminPune');
+    console.log("Redirecting to Pune dashboard...");
   } else {
     console.log("Unauthorized access. Role or branch mismatch.");
     setError("Unauthorized access. Please contact admin.");
