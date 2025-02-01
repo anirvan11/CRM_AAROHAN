@@ -143,7 +143,7 @@ const Reports = () => {
         : 0;
 
     return (
-        <div className="h-screen w-full bg-white overflow-hidden relative">
+        <div className="h-screen w-full bg-white overflow-auto relative">
             <NavBar />
             <div className="p-6">
                 <h1 className="text-2xl font-semibold text-black mb-4">Reports</h1>

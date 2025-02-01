@@ -110,16 +110,20 @@ const Product = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-white overflow-hidden">
+    <div className="h-screen w-full bg-white overflow-auto">
       <NavBar />
-      <div className="grid grid-cols-5 gap-4 p-4 text-black">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 text-black">
         {products.map((product, index) => (
           <div
             key={index}
             className="bg-gray-200 p-4 rounded-lg text-center cursor-pointer"
             onClick={() => openModal(product)}
           >
-            <img src={product.image} alt={product.name} className="w-full h-32 object-cover rounded" />
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-32 object-cover rounded"
+            />
             <h3 className="mt-2 text-lg font-bold">{product.name}</h3>
           </div>
         ))}

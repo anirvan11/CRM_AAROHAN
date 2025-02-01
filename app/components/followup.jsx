@@ -55,72 +55,74 @@ export default function FollowUpTable() {
   };
 
   return (
-    <div className="p-4 bg-stone-200 rounded-lg shadow-lg z-[1]">
+    <div className="p-4 bg-stone-200 rounded-lg shadow-lg z-[1] overflow-x-auto">
       <h1 className="text-2xl font-bold mb-4 text-black text-center">Follow-Up's</h1>
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="py-2 px-4 border-b text-left text-black">Company</th>
-            <th className="py-2 px-4 border-b text-left text-black">Name</th>
-            <th className="py-2 px-4 border-b text-left text-black">Number</th>
-            <th className="py-2 px-4 border-b text-left text-black">Status</th>
-            <th className="py-2 px-4 border-b text-left text-black">Action</th>
-            <th className="py-2 px-4 border-b text-left text-black">Prev Comment</th>
-            <th className="py-2 px-4 border-b text-left text-black">Quotation</th>
-          </tr>
-        </thead>
-        <tbody>
-          {customers.map((customer) => (
-            <tr key={customer.id} className="hover:bg-gray-100">
-              <td className="py-2 px-4 border-b text-black">{customer['Company Name']}</td>
-              <td className="py-2 px-4 border-b text-black">{customer.Person}</td>
-              <td className="py-2 px-4 border-b text-black">{customer.Phone}</td>
-              <td className="py-2 px-4 border-b text-black">
-                <span
-                  className={`px-2 py-1 rounded text-white ${
-                    customer.Status === 'Pending' ? 'bg-yellow-500' :
-                    customer.Status === 'In-progress' ? 'bg-blue-500' :
-                    customer.Status === 'Verified' ? 'bg-green-500' :
-                    customer.Status === 'Completed' ? 'bg-gray-500' : ''
-                  }`}
-                >
-                  {customer.Status}
-                </span>
-              </td>
-              <td className="py-2 px-4 border-b">
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded shadow"
-                  onClick={() => handleEditClick(customer)}
-                >
-                  Action
-                </button>
-              </td>
-              <td className="py-2 px-4 border-b text-black">{customer.Note}</td>
-              <td className="py-2 px-4 border-b text-black">
-                <button
-                  onClick={() => setShowPopId(customer.id)}
-                  className="w-full text-left"
-                >
-                  {customer.Quotation.Total}
-                </button>
-                {showPopId === customer.id && (
-                  <div className="absolute bg-white border border-gray-300 shadow-lg p-4 rounded-lg">
-                    <p><strong>Total:</strong> {customer.Quotation.Total}</p>
-                    <p><strong>Paid:</strong> {customer.Quotation.Paid}</p>
-                    <p><strong>Left:</strong> {customer.Quotation.Left}</p>
-                    <button
-                      onClick={() => setShowPopId(null)}
-                      className="mt-2 text-blue-500 hover:underline"
-                    >
-                      Close
-                    </button>
-                  </div>
-                )}
-              </td>
+      <div className="w-full overflow-x-auto">
+        <table className="w-full bg-white border border-gray-300 rounded-lg shadow-lg text-sm md:text-base">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="py-2 px-2 md:px-4 border-b text-left text-black">Company</th>
+              <th className="py-2 px-2 md:px-4 border-b text-left text-black">Name</th>
+              <th className="py-2 px-2 md:px-4 border-b text-left text-black">Number</th>
+              <th className="py-2 px-2 md:px-4 border-b text-left text-black">Status</th>
+              <th className="py-2 px-2 md:px-4 border-b text-left text-black">Action</th>
+              <th className="py-2 px-2 md:px-4 border-b text-left text-black">Prev Comment</th>
+              <th className="py-2 px-2 md:px-4 border-b text-left text-black">Quotation</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {customers.map((customer) => (
+              <tr key={customer.id} className="hover:bg-gray-100">
+                <td className="py-2 px-2 md:px-4 border-b text-black">{customer['Company Name']}</td>
+                <td className="py-2 px-2 md:px-4 border-b text-black">{customer.Person}</td>
+                <td className="py-2 px-2 md:px-4 border-b text-black">{customer.Phone}</td>
+                <td className="py-2 px-2 md:px-4 border-b text-black">
+                  <span
+                    className={`px-2 py-1 rounded text-white text-xs md:text-sm ${
+                      customer.Status === 'Pending' ? 'bg-yellow-500' :
+                      customer.Status === 'In-progress' ? 'bg-blue-500' :
+                      customer.Status === 'Verified' ? 'bg-green-500' :
+                      customer.Status === 'Completed' ? 'bg-gray-500' : ''
+                    }`}
+                  >
+                    {customer.Status}
+                  </span>
+                </td>
+                <td className="py-2 px-2 md:px-4 border-b">
+                  <button
+                    className="bg-blue-500 text-white px-2 md:px-4 py-1 md:py-2 rounded shadow"
+                    onClick={() => handleEditClick(customer)}
+                  >
+                    Action
+                  </button>
+                </td>
+                <td className="py-2 px-2 md:px-4 border-b text-black">{customer.Note}</td>
+                <td className="py-2 px-2 md:px-4 border-b text-black">
+                  <button
+                    onClick={() => setShowPopId(customer.id)}
+                    className="w-full text-left"
+                  >
+                    {customer.Quotation.Total}
+                  </button>
+                  {showPopId === customer.id && (
+                    <div className="absolute bg-white border border-gray-300 shadow-lg p-4 rounded-lg text-sm md:text-base">
+                      <p><strong>Total:</strong> {customer.Quotation.Total}</p>
+                      <p><strong>Paid:</strong> {customer.Quotation.Paid}</p>
+                      <p><strong>Left:</strong> {customer.Quotation.Left}</p>
+                      <button
+                        onClick={() => setShowPopId(null)}
+                        className="mt-2 text-blue-500 hover:underline"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {showPopup && (
         <EditPopup customer={selectedCustomer} onClose={handleClosePopup} />

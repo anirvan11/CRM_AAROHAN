@@ -6,6 +6,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/app/firebase/config';
 import PersonIcon from '@mui/icons-material/Person';
 import ProfileModal from '../../components/profileinfo';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const NavBar = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -41,39 +42,82 @@ const NavBar = () => {
               alt="Enerfra Logo"
             />
           </div>
-          <div className="lg:hidden">
-            <button onClick={() => setIsNavOpen(!isNavOpen)} className="text-white focus:outline-none">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          <div className="lg:hidden flex items-center">
+            {/* Mobile Logout Button */}
+            <button onClick={handleLogout} className="text-white px-3 py-2 text-sm mr-4">
+            <LogoutIcon/>
+            </button>
+            {/* Hamburger Menu Button */}
+            <button
+              onClick={() => setIsNavOpen(!isNavOpen)}
+              className="text-white focus:outline-none"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
               </svg>
             </button>
           </div>
           <div className={`lg:flex items-center justify-center flex-1 ${isNavOpen ? 'block' : 'hidden'}`}>
-            <Link href="../Pune-dashboard/Dashboard" className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase">
+            <Link
+              href="../Pune-dashboard/Dashboard"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
               Dashboard
             </Link>
-            <Link href="../Pune-dashboard/Contacts" className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase">
+            <Link
+              href="../Pune-dashboard/Contacts"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
               Contacts
             </Link>
-            <Link href="../Pune-dashboard/Reports" className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase">
+            <Link
+              href="../Pune-dashboard/Reports"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
               Report
             </Link>
-            <Link href="../Pune-dashboard/Sales" className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase">
+            <Link
+              href="../Pune-dashboard/Sales"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
               Sales
             </Link>
-            <Link href="../Pune-dashboard/Tasks" className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase">
+            <Link
+              href="../Pune-dashboard/Tasks"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
               Tasks
             </Link>
-            <Link href="../Pune-dashboard/Products" className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase">
+            <Link
+              href="../Pune-dashboard/Products"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
               Products
             </Link>
           </div>
           <div className={`hidden lg:flex items-center ${isNavOpen ? 'block' : 'hidden'}`}>
-            <button onClick={handleModalOpen} className="text-white px-4 py-2 block hover:bg-blue-400 rounded flex items-center">
+            <button
+              onClick={handleModalOpen}
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded flex items-center"
+            >
               <PersonIcon className="w-6 h-6 mr-2" />
             </button>
             <ProfileModal isOpen={isModalOpen} onClose={handleModalClose} />
-            <button onClick={handleLogout} className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase ml-4">
+            <button
+              onClick={handleLogout}
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase ml-4"
+            >
               Logout
             </button>
           </div>

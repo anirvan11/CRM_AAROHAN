@@ -13,11 +13,11 @@ const Dashboard = () => {
       <div className="flex-1 p-4">
           <EnquiriesOverview />
         </div>
-        <div className="p-4">
+        <div className="p-4 w-full ">
           <FollowUpTable />
         </div>
       </div>
-      <div className="absolute bottom-10 left-0 p-2">
+      <div className="absolute bottom-20 left-0 p-2">
         <TodaysTasks />
       </div>
     </div>

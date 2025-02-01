@@ -1,4 +1,4 @@
-'use client'
+'use client' 
 import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
@@ -36,7 +36,6 @@ export default function SalesPage() {
             ...doc.data(),
           }));
         
-        
           const groupedCustomers = {
             pending: customersList.filter(customer => customer.Status === 'Pending'),
             inProgress: customersList.filter(customer => customer.Status === 'In-progress'),
@@ -44,7 +43,6 @@ export default function SalesPage() {
             completed: customersList.filter(customer => customer.Status === 'Completed')
           };
           setCustomers(groupedCustomers);
-
         } catch (error) {
           console.error("Error fetching customers: ", error);
         }
@@ -58,19 +56,25 @@ export default function SalesPage() {
   }, []);
 
   return (
-    <div className="h-screen w-full bg-gray-100 overflow-hidden">
+    <div className="h-screen w-full bg-gray-100 overflow-auto">
       <NavBar />
-      <div className="container mx-auto py-4">
+      <div className="container mx-auto py-4 px-4">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">Sales Board</h1>
-        <div className="flex space-x-6">
+        
+        {/* Responsive Layout */}
+        <div className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0">
           {Object.keys(customers).map((status, index) => (
-            <div key={index} className="flex-1 bg-white shadow-lg rounded-lg p-4">
-             <h2 className={`text-lg font-semibold mb-4 ${statusColors[status]}`}>
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
-            </h2>
+            <div 
+              key={index} 
+              className="flex-1 bg-white shadow-lg rounded-lg p-4 max-h-[70vh] overflow-y-auto"
+            >
+              <h2 className={`text-lg font-semibold mb-4 ${statusColors[status]}`}>
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </h2>
+              
               <div className="space-y-4">
                 {customers[status].map(customer => (
-                  <div key={customer.id} className="p-4 bg-gray-50 rounded-lg shadow">
+                  <div key={customer.id} className="p-4 bg-gray-50 rounded-lg shadow-md">
                     <p className="font-bold text-gray-800">{customer['Company Name']}</p>
                     <p className="text-gray-700">{customer.Person}</p>
                     <p className="text-gray-700">{customer.Phone}</p>
