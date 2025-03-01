@@ -17,6 +17,10 @@ const Reports = () => {
         advancePaid: 0,
         yetToPay: 0,
     });
+    const [wonCount, setWonCount] = useState(0);
+    const [lostCount, setLostCount] = useState(0);
+    const [deadCount, setDeadCount] = useState(0);
+
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -44,6 +48,7 @@ const Reports = () => {
 
             let allocatedEnquiries = [];
             let totalPaid = 0, advancePaid = 0, yetToPay = 0;
+            let won = 0, lost = 0, dead = 0; // New counters
 
             customersSnapshot.forEach((doc) => {
                 const enquiryData = doc.data();
@@ -61,6 +66,21 @@ const Reports = () => {
                         totalPaid += quotation.Total || 0;
                         advancePaid += quotation.Paid || 0;
                         yetToPay += quotation.Left || 0;
+
+                        // Count customers based on status
+                        switch (enquiryData?.Status) {
+                            case 'Won':
+                                won++;
+                                break;
+                            case 'Lost':
+                                lost++;
+                                break;
+                            case 'Dead':
+                                dead++;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             });
@@ -68,7 +88,7 @@ const Reports = () => {
             // Compute the current month's open and total enquiries
             let currentTotal = allocatedEnquiries.length;
             let openCount = allocatedEnquiries.filter((enquiry) =>
-                ['Verified', 'Pending', 'In-progress'].includes(enquiry?.Status)
+                ['Verified', 'Pending'].includes(enquiry?.Status)
             ).length;
 
             // Fetch previous month's report
@@ -103,6 +123,10 @@ const Reports = () => {
 
             // Set financial data
             setFinancialSummary({ totalPaid, advancePaid, yetToPay });
+            // Set new status counts
+            setWonCount(won);
+            setLostCount(lost);
+            setDeadCount(dead);
 
             // Save the current report only if today is the last day of the month
             if (isLastDayOfMonth) {
@@ -117,6 +141,9 @@ const Reports = () => {
                     totalPaid,
                     advancePaid,
                     yetToPay,
+                    wonCount: won,
+                    lostCount: lost,
+                    deadCount: dead,
                     uid: currentUserUID
                 });
 
@@ -127,6 +154,9 @@ const Reports = () => {
                     totalPaid,
                     advancePaid,
                     yetToPay,
+                    won,
+                    lost,
+                    dead
                 });
             }
         } catch (error) {
@@ -184,7 +214,21 @@ const Reports = () => {
                         </div>
                     </div>
                 </div>
-
+                 {/* Customer Status Summary */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="bg-green-100 rounded-lg shadow-md p-4">
+                        <h2 className="text-lg font-semibold text-black">Won Leads</h2>
+                        <p className="text-2xl font-bold text-black">{wonCount}</p>
+                    </div>
+                    <div className="bg-gray-100 rounded-lg shadow-md p-4">
+                        <h2 className="text-lg font-semibold text-black">Lost Leads</h2>
+                        <p className="text-2xl font-bold text-black">{lostCount}</p>
+                    </div>
+                    <div className="bg-red-200 rounded-lg shadow-md p-4">
+                        <h2 className="text-lg font-semibold text-black">Dead Leads</h2>
+                        <p className="text-2xl font-bold text-black">{deadCount}</p>
+                    </div>
+                </div>
                 {/* Financial Summary and Revenue Chart */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Financial Summary */}

@@ -1,15 +1,16 @@
 'use client'; 
 import React, { useEffect, useState } from 'react';
 import AdminNav from '../AdminNavBar/AdminNav';
-import { db } from '../../firebase/config';
-import { collection, getDocs, doc, setDoc, query, where } from 'firebase/firestore';
+import { auth,db } from '../../firebase/config';
+import { collection, getDocs, doc, setDoc, query, where, getDoc } from 'firebase/firestore';
 import { Group as GroupIcon } from '@mui/icons-material';
 import { ArrowDropUp as ArrowUpIcon, ArrowDropDown as ArrowDownIcon } from '@mui/icons-material';
-import EmpRevenueChart from './EmpRevenueChart';
+import EmpRevenueChart from '../../components/EmpRevenueChart';
 
 const EmpReports = () => {
     const [selectedEmployee, setSelectedEmployee] = useState('');
     const [employees, setEmployees] = useState([]); // To store employee data
+    const [userBranch, setUserBranch] = useState('');
     const [totalEnquiries, setTotalEnquiries] = useState(0);
     const [openEnquiries, setOpenEnquiries] = useState(0);
     const [previousTotalEnquiries, setPreviousTotalEnquiries] = useState(0);
@@ -20,23 +21,58 @@ const EmpReports = () => {
         yetToPay: 0,
     });
 
-    useEffect(() => {
-        const fetchEmployees = async () => {
-            try {
-                const employeesRef = collection(db, 'users'); // Fetch the users from the 'Users' collection
-                const employeesSnapshot = await getDocs(employeesRef);
-                const employeesList = employeesSnapshot.docs.map(doc => ({
-                    id: doc.id,  // The document ID (uid)
-                    ...doc.data(), // The employee data (Name, Email, etc.)
-                }));
-                setEmployees(employeesList);
-            } catch (error) {
-                console.error('Error fetching employees:', error);
-            }
-        };
+        const [wonCount, setWonCount] = useState(0);
+        const [lostCount, setLostCount] = useState(0);
+        const [deadCount, setDeadCount] = useState(0);
 
-        fetchEmployees();
-    }, []);
+   // Fetch logged-in user's branch
+useEffect(() => {
+    const fetchUserBranch = async () => {
+        try {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+
+            if (userSnap.exists()) {
+                setUserBranch(userSnap.data().Branch);
+            }
+        } catch (error) {
+            console.error('Error fetching user branch:', error);
+        }
+    };
+
+    fetchUserBranch();
+}, []);
+
+// Fetch employees of the same branch, excluding Admin and Panel roles
+useEffect(() => {
+    if (!userBranch) return;
+
+    const fetchEmployees = async () => {
+        try {
+            const employeesRef = query(
+                collection(db, 'users'),
+                where('Branch', '==', userBranch) // Only fetch employees from the same branch
+            );
+
+            const employeesSnapshot = await getDocs(employeesRef);
+            const employeesList = employeesSnapshot.docs
+                .map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+                .filter(emp => emp.Role !== 'Admin' && emp.Role !== 'Panel'); // Exclude Admin and Panel roles
+
+            setEmployees(employeesList);
+        } catch (error) {
+            console.error('Error fetching employees:', error);
+        }
+    };
+
+    fetchEmployees();
+}, [userBranch]);
 
     useEffect(() => {
         if (selectedEmployee) {
@@ -59,6 +95,8 @@ const EmpReports = () => {
 
             let allocatedEnquiries = [];
             let totalPaid = 0, advancePaid = 0, yetToPay = 0;
+            let won = 0, lost = 0, dead = 0; // New counters
+
 
             customersSnapshot.forEach((doc) => {
                 const enquiryData = doc.data();
@@ -76,12 +114,26 @@ const EmpReports = () => {
                         advancePaid += quotation.Paid || 0;
                         yetToPay += quotation.Left || 0;
                     }
+                    // Count customers based on status
+                    switch (enquiryData?.Status) {
+                        case 'Won':
+                            won++;
+                            break;
+                        case 'Lost':
+                            lost++;
+                            break;
+                        case 'Dead':
+                            dead++;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             });
 
             let currentTotal = allocatedEnquiries.length;
             let openCount = allocatedEnquiries.filter((enquiry) =>
-                ['Verified', 'Pending', 'In-progress'].includes(enquiry?.Status)
+                ['Verified', 'Pending'].includes(enquiry?.Status)
             ).length;
 
             const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
@@ -111,6 +163,10 @@ const EmpReports = () => {
             setOpenEnquiries(openCount);
 
             setFinancialSummary({ totalPaid, advancePaid, yetToPay });
+             // Set new status counts
+            setWonCount(won);
+            setLostCount(lost);
+            setDeadCount(dead);
 
             if (isLastDayOfMonth) {
                 const currentDocId = `${currentYear}-${currentMonth + 1}`;
@@ -124,6 +180,9 @@ const EmpReports = () => {
                     totalPaid,
                     advancePaid,
                     yetToPay,
+                    wonCount: won,
+                    lostCount: lost,
+                    deadCount: dead,
                     uid: employeeUID
                 });
             }
@@ -188,6 +247,21 @@ const EmpReports = () => {
                                 {Math.abs(openPercentageChange.toFixed(2))}% this month
                             </p>
                         </div>
+                    </div>
+                </div>
+                 {/* Customer Status Summary */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="bg-green-100 rounded-lg shadow-md p-4">
+                        <h2 className="text-lg font-semibold text-black">Won Leads</h2>
+                        <p className="text-2xl font-bold text-black">{wonCount}</p>
+                    </div>
+                    <div className="bg-gray-100 rounded-lg shadow-md p-4">
+                        <h2 className="text-lg font-semibold text-black">Lost Leads</h2>
+                        <p className="text-2xl font-bold text-black">{lostCount}</p>
+                    </div>
+                    <div className="bg-red-200 rounded-lg shadow-md p-4">
+                        <h2 className="text-lg font-semibold text-black">Dead Leads</h2>
+                        <p className="text-2xl font-bold text-black">{deadCount}</p>
                     </div>
                 </div>
 

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase/config"; // Replace with your Firebase config file
-import { collection, getDocs, setDoc, doc, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "../firebase/config";
+import { collection, getDocs, setDoc, doc, serverTimestamp, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 const AddCustomerForm = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   const [formData, setFormData] = useState({
     Allocation: "",
     Branch: "",
@@ -33,47 +35,28 @@ const AddCustomerForm = () => {
     "Heat shrink cable repair sleeve",
   ];
 
-  // Fetch users from Firestore
+  // Fetch the current user's details
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const userList = querySnapshot.docs
-          .map((doc) => ({
-            uid: doc.id,
-            Name: doc.data().Name,
-            Role: doc.data().Role,
-            Branch: doc.data().Branch,
-          }))
-          .filter((user) => user.Role !== "Admin"); // Filter out Admin users
-        setUsers(userList);
-      } catch (error) {
-        console.error("Error fetching users:", error);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setCurrentUser(user);
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setFormData((prev) => ({
+              ...prev,
+              Allocation: user.uid, // Automatically set current user UID
+              Branch: userData.Branch, // Automatically set user's branch
+            }));
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
       }
-    };
+    });
 
-    fetchUsers();
-  }, []);
-
-  // Filter users based on selected Branch
-  useEffect(() => {
-    if (formData.Branch) {
-      setFilteredUsers(users.filter((user) => user.Branch === formData.Branch));
-    } else {
-      setFilteredUsers([]);
-    }
-  }, [formData.Branch, users]);
-
-  // Handle background color change on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 200); // Change 200 to adjust the scroll height trigger
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => unsubscribe();
   }, []);
 
   const handleChange = (e) => {
@@ -111,15 +94,15 @@ const AddCustomerForm = () => {
     e.preventDefault();
 
     try {
-      await setDoc(doc(db, "Customers", formData["Company Name"]), {
+      await setDoc(doc(db, "TemporaryCustomer", formData["Company Name"]), {
         ...formData,
         Quotation: { Left: 0, Paid: 0, Total: 0 },
         createdAt: serverTimestamp(),
       });
-      alert("Customer added successfully!");
+      alert("Customer submitted for approval!");
       setFormData({
-        Allocation: "",
-        Branch: "",
+        Allocation: currentUser?.uid || "",
+        Branch: formData.Branch,
         "Company Name": "",
         Email: "",
         Person: "",
@@ -130,7 +113,7 @@ const AddCustomerForm = () => {
       });
       setSelectedProducts([]);
     } catch (error) {
-      console.error("Error adding customer:", error);
+      console.error("Error submitting customer:", error);
     }
   };
 
@@ -138,37 +121,7 @@ const AddCustomerForm = () => {
     <div className="mt-0 p-4 bg-white rounded-lg shadow max-w-lg mx-auto">
       <h1 className="text-xl font-bold mb-4 text-black">Add Customer</h1>
       <form onSubmit={handleSubmit}>
-        {/* Branch Selection */}
-        <label className="block mb-2 text-black">Organization</label>
-        <select
-          name="Branch"
-          value={formData.Branch}
-          onChange={handleChange}
-          className="border p-2 w-full mb-4 text-black"
-        >
-          <option value="">Select an Organization</option>
-          <option value="North">3s Sales Corporation</option>
-          <option value="North2">3s Enterprises</option>
-          <option value="Pune">Aarohan</option>
-        </select>
 
-        {/* Allocation (Filtered by Branch) */}
-        <label className="block mb-2 text-black">Allocation</label>
-        <select
-          className="border p-2 w-full mb-4 text-black"
-          name="Allocation"
-          value={formData.Allocation}
-          onChange={handleChange}
-        >
-          <option value="">Select a user</option>
-          {filteredUsers.map((user) => (
-            <option key={user.uid} value={user.uid}>
-              {user.Name}
-            </option>
-          ))}
-        </select>
-
-        {/* Company Name */}
         <label className="block mb-2 text-black">Company Name</label>
         <input
           className="border p-2 w-full mb-4 text-black"
@@ -178,7 +131,6 @@ const AddCustomerForm = () => {
           onChange={handleChange}
         />
 
-        {/* Email */}
         <label className="block mb-2 text-black">Email</label>
         <input
           className="border p-2 w-full mb-4 text-black"
@@ -188,7 +140,6 @@ const AddCustomerForm = () => {
           onChange={handleChange}
         />
 
-        {/* Person */}
         <label className="block mb-2 text-black">Person</label>
         <input
           className="border p-2 w-full mb-4 text-black"
@@ -198,7 +149,6 @@ const AddCustomerForm = () => {
           onChange={handleChange}
         />
 
-        {/* Phone */}
         <label className="block mb-2 text-black">Phone</label>
         <input
           className="border p-2 w-full mb-4 text-black"
@@ -251,12 +201,11 @@ const AddCustomerForm = () => {
           </div>
         ))}
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          Add Customer
+          Submit for Approval
         </button>
       </form>
     </div>

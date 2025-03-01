@@ -30,12 +30,13 @@ export default function Login() {
         console.log("User Data:", userData);
         sessionStorage.setItem('user', JSON.stringify(userData));
 
-        if (userData.Role === "Employee" && userData.Branch === "North") {
-          console.log("Redirecting to North dashboard...");
-        } else if (userData.Role === "Employee" && userData.Branch === "Pune") {
+        if (userData.Role === "Employee") {
           router.push('/Pune-dashboard');
-        } else if (userData.Role === "Admin" && userData.Branch === "Pune") {
+        } else if (userData.Role === "Admin") {
           router.push('/AdminPune');
+        }
+          else if (userData.Role === "Panel" ) {
+            router.push('/Admin_Panel');
         } else {
           setError("Unauthorized access. Please contact admin.");
         }
@@ -49,10 +50,15 @@ export default function Login() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen font-sans">
-      <div className="flex flex-col md:w-1/2 bg-gradient-to-b from-blue-300 to-blue-900 text-white p-20 md:p-20 justify-center items-center md:items-start">
-        <div className="absolute top-0 left-0 mt-4 ml-4">
-          <img src="/favicon.png" alt="Logo" className="w-12 h-auto mb-3" />
-        </div>
+      <div className="relative flex flex-col md:w-1/2 bg-gradient-to-b from-blue-300 to-blue-900 text-white p-20 md:p-20 justify-center items-center md:items-start">
+        
+        {/* Aarohan Logo - Only visible on larger screens */}
+        <img 
+          src="/aarohan_logo.png" 
+          alt="Aarohan Logo" 
+          className="hidden md:block absolute top-[25%] left-1/2 transform -translate-x-1/2 w-48 h-auto" 
+        />
+
         <h1 className="text-5xl font-extrabold mb-4">Hey There!</h1>
         <p className="text-2xl font-medium leading-relaxed text-center md:text-left">
           Welcome Back. You are just one step away from your work.

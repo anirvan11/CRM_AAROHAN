@@ -67,7 +67,7 @@ const EnquiriesOverview = () => {
             // Compute the current month's open and total enquiries
             let currentTotal = allocatedEnquiries.length;
             let openCount = allocatedEnquiries.filter((enquiry) =>
-                ['Verified', 'Pending', 'In-progress'].includes(enquiry?.Status)
+                ['Verified', 'Pending'].includes(enquiry?.Status)
             ).length;
 
             // Fetch previous month's report

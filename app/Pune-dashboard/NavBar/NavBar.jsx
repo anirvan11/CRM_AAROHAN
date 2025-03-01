@@ -12,6 +12,7 @@ const NavBar = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -19,6 +20,14 @@ const NavBar = () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+  };
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutConfirm(false);
   };
 
   const handleLogout = async () => {
@@ -44,8 +53,8 @@ const NavBar = () => {
           </div>
           <div className="lg:hidden flex items-center">
             {/* Mobile Logout Button */}
-            <button onClick={handleLogout} className="text-white px-3 py-2 text-sm mr-4">
-            <LogoutIcon/>
+            <button onClick={handleLogoutConfirm} className="text-white px-3 py-2 text-sm mr-4">
+              <LogoutIcon />
             </button>
             {/* Hamburger Menu Button */}
             <button
@@ -100,6 +109,12 @@ const NavBar = () => {
               Tasks
             </Link>
             <Link
+              href="../Pune-dashboard/AddLeads"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
+              Add Leads
+            </Link>
+            <Link
               href="../Pune-dashboard/Products"
               className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
             >
@@ -115,7 +130,7 @@ const NavBar = () => {
             </button>
             <ProfileModal isOpen={isModalOpen} onClose={handleModalClose} />
             <button
-              onClick={handleLogout}
+              onClick={handleLogoutConfirm}
               className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase ml-4"
             >
               Logout
@@ -123,6 +138,29 @@ const NavBar = () => {
           </div>
         </div>
       </nav>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg font-semibold text-gray-900">Are you sure you want to logout?</p>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={handleCancelLogout}
+                className="bg-gray-300 text-gray-900 px-4 py-2 rounded mr-2 hover:bg-gray-400"
+              >
+                No
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

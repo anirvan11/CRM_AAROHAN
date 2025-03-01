@@ -25,7 +25,7 @@ function EditPopup({ customer, onClose }) {
       setLeftQuotation(customer.Quotation.Left);
     }
     setNote(customer.Note || '');
-    setCompanyName(customer['Company Name'] || ''); // Automatically set company name
+    setCompanyName(customer['Company Name'] || '');
   }, [customer]);
 
   const handleUpdate = async () => {
@@ -38,23 +38,38 @@ function EditPopup({ customer, onClose }) {
         FollowUpMethod: followUpMethod,
         Note: note,
         Status: status,
-        Quotation: {
-          Total: totalQuotation,
-          Paid: paidQuotation,
-          Left: leftQuotation,
-        },
       };
 
-      if (status === 'Completed') {
+      if (status === 'Lost' || status === 'Dead' || status === 'Won') {
         updates.LastTouch = new Date();
       }
 
+      // Update Status, FollowUpMethod, Note, LastTouch directly in Customers
       await updateDoc(customerDoc, updates);
+
+      // If Quotation is updated, send to PendingQuotation instead of updating Customers directly
+      if (
+        Number(totalQuotation) !== customer.Quotation?.Total ||
+        Number(paidQuotation) !== customer.Quotation?.Paid ||
+        Number(leftQuotation) !== customer.Quotation?.Left
+      ) {
+        await addDoc(collection(db, 'PendingQuotation'), {
+          customerId: customer.id,
+          Branch: customer.Branch, // Ensure Panel only sees their branch
+          Quotation: {
+            Total: Number(totalQuotation),
+            Paid: Number(paidQuotation),
+            Left: Number(leftQuotation),
+          },
+          RequestedBy: user ? user.uid : 'Anonymous',
+          RequestedAt: new Date(),
+        });
+      }
 
       if (showTaskFields && taskName && taskDescription && taskStartDate && taskEndDate) {
         await addDoc(collection(db, 'Tasks'), {
           TaskName: taskName,
-          Company: companyName, // Use pre-filled company name
+          Company: companyName,
           Description: taskDescription,
           StartDate: taskStartDate,
           EndDate: taskEndDate,
@@ -68,7 +83,6 @@ function EditPopup({ customer, onClose }) {
       console.error("Error updating customer or adding task: ", error);
     }
   };
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1]">
       <div className="bg-white rounded-lg shadow-lg p-6 w-[40rem] max-h-[80vh] overflow-auto">
@@ -110,15 +124,15 @@ function EditPopup({ customer, onClose }) {
           <div className="flex space-x-2">
             <button
               onClick={() => setStatus('Verified')}
-              className={`px-3 py-1 rounded ${status === 'Verified' ? 'bg-green-500 text-white' : 'bg-gray-200 text-black'}`}
+              className={`px-3 py-1 rounded ${status === 'Verified' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
             >
               Verified
             </button>
             <button
-              onClick={() => setStatus('In-progress')}
-              className={`px-3 py-1 rounded ${status === 'In-progress' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+              onClick={() => setStatus('Won')}
+              className={`px-3 py-1 rounded ${status === 'Won' ? 'bg-green-500 text-white' : 'bg-gray-200 text-black'}`}
             >
-              In-progress
+              Won
             </button>
             <button
               onClick={() => setStatus('Pending')}
@@ -127,10 +141,16 @@ function EditPopup({ customer, onClose }) {
               Pending
             </button>
             <button
-              onClick={() => setStatus('Completed')}
-              className={`px-3 py-1 rounded ${status === 'Completed' ? 'bg-gray-500 text-white' : 'bg-gray-200 text-black'}`}
+              onClick={() => setStatus('Lost')}
+              className={`px-3 py-1 rounded ${status === 'Lost' ? 'bg-gray-500 text-white' : 'bg-gray-200 text-black'}`}
             >
-              Completed
+              Lost
+            </button>
+            <button
+              onClick={() => setStatus('Dead')}
+              className={`px-3 py-1 rounded ${status === 'Dead' ? 'bg-red-500 text-white' : 'bg-gray-200 text-black'}`}
+            >
+              Dead
             </button>
           </div>
         </div>
@@ -139,7 +159,7 @@ function EditPopup({ customer, onClose }) {
           <label className="block mb-2">
             <span className="text-black">Total:</span>
             <input
-              type="text"
+              type="number"
               value={totalQuotation}
               onChange={(e) => setTotalQuotation(e.target.value)}
               className="w-full mt-1 p-2 text-black border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -148,7 +168,7 @@ function EditPopup({ customer, onClose }) {
           <label className="block mb-2">
             <span className="text-black">Paid:</span>
             <input
-              type="text"
+              type="number"
               value={paidQuotation}
               onChange={(e) => setPaidQuotation(e.target.value)}
               className="w-full mt-1 p-2 text-black border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -157,7 +177,7 @@ function EditPopup({ customer, onClose }) {
           <label className="block mb-2">
             <span className="text-black">Left:</span>
             <input
-              type="text"
+              type="number"
               value={leftQuotation}
               onChange={(e) => setLeftQuotation(e.target.value)}
               className="w-full mt-1 p-2 text-black border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -92,7 +92,7 @@ const Contacts = () => {
     <div className="h-screen w-full bg-white overflow-hidden">
       <NavBar />
       <div className="p-6">
-        <div className="mb-4 flex items-center space-x-4">
+        <div className="mb-4 flex items-center space-x-4 text-black">
           <select
             className="border border-gray-300 rounded-lg p-2"
             value={statusFilter}
@@ -102,12 +102,14 @@ const Contacts = () => {
             <option value="">All Status</option>
             <option value="Verified">Verified</option>
             <option value="Pending">Pending</option>
-            <option value="In-Progress">In-Progress</option>
-            <option value="Completed">Completed</option>
+            <option value="Lost">Lost</option>
+            <option value="Won">Won</option>
+            <option value="Dead">Dead</option>
+
           </select>
 
           <button
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 disabled:opacity-50"
+            className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400 disabled:opacity-50"
             onClick={handleClearFilter}
             disabled={loading || !statusFilter}
           >

@@ -29,8 +29,11 @@ export default function FollowUpTable() {
           }));
 
           // Filter out customers with "Completed" status
-          const filteredCustomers = customersList.filter(customer => customer.Status !== 'Completed');
+          const filteredCustomers = customersList.filter(
+            customer => customer.Status !== 'Won' && customer.Status !== 'Dead' && customer.Status !== 'Lost'
+          );
           setCustomers(filteredCustomers);
+          
 
         } catch (error) {
           console.error("Error fetching customers: ", error);
@@ -80,9 +83,10 @@ export default function FollowUpTable() {
                   <span
                     className={`px-2 py-1 rounded text-white text-xs md:text-sm ${
                       customer.Status === 'Pending' ? 'bg-yellow-500' :
-                      customer.Status === 'In-progress' ? 'bg-blue-500' :
-                      customer.Status === 'Verified' ? 'bg-green-500' :
-                      customer.Status === 'Completed' ? 'bg-gray-500' : ''
+                      customer.Status === 'Verified' ? 'bg-blue-500' :
+                      customer.Status === 'Won' ? 'bg-green-500' : 
+                      customer.Status === 'Lost' ? 'bg-gray-500' :
+                        customer.Status === 'Dead' ? 'bg-red-500' : ''
                     }`}
                   >
                     {customer.Status}

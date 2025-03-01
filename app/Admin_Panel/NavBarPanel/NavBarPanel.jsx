@@ -8,11 +8,11 @@ import PersonIcon from '@mui/icons-material/Person';
 import ProfileModal from '../../components/profileinfo';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-const AdminNav = () => {
+const NavBarPanel = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const router = useRouter();
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -20,6 +20,14 @@ const AdminNav = () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+  };
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutConfirm(false);
   };
 
   const handleLogout = async () => {
@@ -45,13 +53,13 @@ const AdminNav = () => {
           </div>
           <div className="lg:hidden flex items-center">
             {/* Mobile Logout Button */}
-            <button onClick={() => setShowLogoutConfirm(true)} className="text-white px-8 py-5 text-sm">
+            <button onClick={handleLogoutConfirm} className="text-white px-3 py-2 text-sm mr-4">
               <LogoutIcon />
             </button>
             {/* Hamburger Menu Button */}
             <button
               onClick={() => setIsNavOpen(!isNavOpen)}
-              className="text-white focus:outline-none ml-auto"
+              className="text-white focus:outline-none"
             >
               <svg
                 className="w-6 h-6"
@@ -69,26 +77,6 @@ const AdminNav = () => {
               </svg>
             </button>
           </div>
-          <div className={`lg:flex items-center justify-center flex-1 ${isNavOpen ? 'block' : 'hidden'}`}>
-            <Link
-              href="../AdminPune/Home"
-              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
-            >
-              Home
-            </Link>
-            <Link
-              href="../AdminPune/EmpReport"
-              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
-            >
-              Emplyee Report
-            </Link>
-            <Link
-              href="../AdminPune/Reports"
-              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
-            >
-              Report
-            </Link>
-          </div>
           <div className={`hidden lg:flex items-center ${isNavOpen ? 'block' : 'hidden'}`}>
             <button
               onClick={handleModalOpen}
@@ -98,7 +86,7 @@ const AdminNav = () => {
             </button>
             <ProfileModal isOpen={isModalOpen} onClose={handleModalClose} />
             <button
-              onClick={() => setShowLogoutConfirm(true)}
+              onClick={handleLogoutConfirm}
               className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase ml-4"
             >
               Logout
@@ -109,21 +97,21 @@ const AdminNav = () => {
 
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <p className="text-lg font-semibold text-gray-900 mb-4">Are you sure you want to logout?</p>
-            <div className="flex justify-center space-x-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg font-semibold text-gray-900">Are you sure you want to logout?</p>
+            <div className="flex justify-end mt-4">
               <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className="bg-gray-500 px-4 py-2 rounded-lg hover:bg-gray-700"
+                onClick={handleCancelLogout}
+                className="bg-gray-300 text-gray-900 px-4 py-2 rounded mr-2 hover:bg-gray-400"
               >
                 No
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Yes
               </button>
             </div>
           </div>
@@ -133,4 +121,4 @@ const AdminNav = () => {
   );
 };
 
-export default AdminNav;
+export default NavBarPanel;

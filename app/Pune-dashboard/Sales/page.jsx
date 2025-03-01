@@ -8,16 +8,16 @@ import NavBar from '../NavBar/NavBar';
 export default function SalesPage() {
   const [customers, setCustomers] = useState({
     pending: [],
-    inProgress: [],
+    Lost: [],
     verified: [],
-    completed: []
+    Won: []
   });
   const [user, setUser] = useState(null);
   const statusColors = {
     pending: 'text-yellow-600',
-    inProgress: 'text-blue-600',
-    verified: 'text-green-600',
-    completed: 'text-gray-600'
+    Lost: 'text-red-600',
+    verified: 'text-blue-600',
+    Won: 'text-green-600'
   };
 
   useEffect(() => {
@@ -38,9 +38,9 @@ export default function SalesPage() {
         
           const groupedCustomers = {
             pending: customersList.filter(customer => customer.Status === 'Pending'),
-            inProgress: customersList.filter(customer => customer.Status === 'In-progress'),
+            Lost: customersList.filter(customer => customer.Status === 'Lost'),
             verified: customersList.filter(customer => customer.Status === 'Verified'),
-            completed: customersList.filter(customer => customer.Status === 'Completed')
+            Won: customersList.filter(customer => customer.Status === 'Won')
           };
           setCustomers(groupedCustomers);
         } catch (error) {
@@ -48,7 +48,7 @@ export default function SalesPage() {
         }
       } else {
         setUser(null);
-        setCustomers({ pending: [], inProgress: [], verified: [], completed: [] });
+        setCustomers({ pending: [], Lost: [], verified: [], Won: [] });
       }
     });
 
