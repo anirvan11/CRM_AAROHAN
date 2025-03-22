@@ -54,10 +54,11 @@ export default function Login() {
         
         {/* Aarohan Logo - Only visible on larger screens */}
         <img 
-          src="/aarohan_logo.png" 
-          alt="Aarohan Logo" 
-          className="hidden md:block absolute top-[25%] left-1/2 transform -translate-x-1/2 w-48 h-auto" 
-        />
+  src="/aarohan_logo.png" 
+  alt="Aarohan Logo" 
+  className="hidden md:block absolute top-10 left-0 transform w-48 h-auto"
+/>
+
 
         <h1 className="text-5xl font-extrabold mb-4">Hey There!</h1>
         <p className="text-2xl font-medium leading-relaxed text-center md:text-left">

@@ -33,7 +33,6 @@ const AddCustomerForm = () => {
     "Heat shrink cable repair sleeve",
   ];
 
-  // Fetch users from Firestore
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -45,7 +44,7 @@ const AddCustomerForm = () => {
             Role: doc.data().Role,
             Branch: doc.data().Branch,
           }))
-          .filter((user) => user.Role !== "Admin"); // Filter out Admin users
+          .filter((user) => user.Role !== "Admin");
         setUsers(userList);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -55,7 +54,6 @@ const AddCustomerForm = () => {
     fetchUsers();
   }, []);
 
-  // Filter users based on selected Branch
   useEffect(() => {
     if (formData.Branch) {
       setFilteredUsers(users.filter((user) => user.Branch === formData.Branch));
@@ -64,10 +62,9 @@ const AddCustomerForm = () => {
     }
   }, [formData.Branch, users]);
 
-  // Handle background color change on scroll
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 200); // Change 200 to adjust the scroll height trigger
+      setIsScrolled(window.scrollY > 200);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -97,12 +94,12 @@ const AddCustomerForm = () => {
     }
   };
 
-  const handleProductQuantityChange = (product, quantity) => {
+  const handleProductDetailsChange = (product, details) => {
     setFormData((prev) => ({
       ...prev,
       Products: {
         ...prev.Products,
-        [product]: quantity > 0 ? quantity : 0,
+        [product]: details,
       },
     }));
   };
@@ -138,7 +135,6 @@ const AddCustomerForm = () => {
     <div className="mt-0 p-4 bg-white rounded-lg shadow max-w-lg mx-auto">
       <h1 className="text-xl font-bold mb-4 text-black">Add Customer</h1>
       <form onSubmit={handleSubmit}>
-        {/* Branch Selection */}
         <label className="block mb-2 text-black">Organization</label>
         <select
           name="Branch"
@@ -152,7 +148,6 @@ const AddCustomerForm = () => {
           <option value="Pune">Aarohan</option>
         </select>
 
-        {/* Allocation (Filtered by Branch) */}
         <label className="block mb-2 text-black">Allocation</label>
         <select
           className="border p-2 w-full mb-4 text-black"
@@ -168,7 +163,6 @@ const AddCustomerForm = () => {
           ))}
         </select>
 
-        {/* Company Name */}
         <label className="block mb-2 text-black">Company Name</label>
         <input
           className="border p-2 w-full mb-4 text-black"
@@ -178,7 +172,6 @@ const AddCustomerForm = () => {
           onChange={handleChange}
         />
 
-        {/* Email */}
         <label className="block mb-2 text-black">Email</label>
         <input
           className="border p-2 w-full mb-4 text-black"
@@ -188,7 +181,6 @@ const AddCustomerForm = () => {
           onChange={handleChange}
         />
 
-        {/* Person */}
         <label className="block mb-2 text-black">Person</label>
         <input
           className="border p-2 w-full mb-4 text-black"
@@ -198,7 +190,6 @@ const AddCustomerForm = () => {
           onChange={handleChange}
         />
 
-        {/* Phone */}
         <label className="block mb-2 text-black">Phone</label>
         <input
           className="border p-2 w-full mb-4 text-black"
@@ -208,7 +199,6 @@ const AddCustomerForm = () => {
           onChange={handleChange}
         />
 
-        {/* Products Dropdown */}
         <label className="block text-gray-700">Products</label>
         <div className="relative mb-4">
           <button
@@ -238,20 +228,16 @@ const AddCustomerForm = () => {
         </div>
         {selectedProducts.map((product) => (
           <div key={product} className="flex items-center mb-2">
-            <label className="mr-2 text-black">{product} Quantity:</label>
+            <label className="mr-2 text-black">{product} Details:</label>
             <input
-              type="number"
-              min="0"
-              className="border p-2 w-24 text-black"
+              type="text"
+              className="border p-2 w-full text-black"
               value={formData.Products[product] || ""}
-              onChange={(e) =>
-                handleProductQuantityChange(product, parseInt(e.target.value) || 0)
-              }
+              onChange={(e) => handleProductDetailsChange(product, e.target.value)}
             />
           </div>
         ))}
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"

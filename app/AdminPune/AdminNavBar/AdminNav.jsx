@@ -77,6 +77,12 @@ const AdminNav = () => {
               Home
             </Link>
             <Link
+              href="../AdminPune/AdminContacts"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
+              Contacts
+            </Link>
+            <Link
               href="../AdminPune/EmpReport"
               className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
             >

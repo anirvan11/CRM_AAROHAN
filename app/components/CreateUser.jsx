@@ -68,7 +68,7 @@ export default function CreateUser() {
         </select>
         <select name="Role" value={userData.Role} onChange={handleChange} className="w-full p-2 text-black border rounded-md">
           <option value="Employee">Employee</option>
-          <option value="Employee">Admin</option>
+          <option value="Admin">Admin</option>
           <option value="Panel">Panel</option>
 
         </select>

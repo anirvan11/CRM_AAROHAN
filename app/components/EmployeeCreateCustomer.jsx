@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import { db, auth } from "../firebase/config";
 import { collection, getDocs, setDoc, doc, serverTimestamp, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
@@ -85,7 +85,7 @@ const AddCustomerForm = () => {
       ...prev,
       Products: {
         ...prev.Products,
-        [product]: quantity > 0 ? quantity : 0,
+        [product]: quantity, // store as string
       },
     }));
   };
@@ -188,14 +188,13 @@ const AddCustomerForm = () => {
         </div>
         {selectedProducts.map((product) => (
           <div key={product} className="flex items-center mb-2">
-            <label className="mr-2 text-black">{product} Quantity:</label>
+            <label className="mr-2 text-black">{product} Description:</label>
             <input
-              type="number"
-              min="0"
+              type="text"
               className="border p-2 w-24 text-black"
               value={formData.Products[product] || ""}
               onChange={(e) =>
-                handleProductQuantityChange(product, parseInt(e.target.value) || 0)
+                handleProductQuantityChange(product, e.target.value)
               }
             />
           </div>

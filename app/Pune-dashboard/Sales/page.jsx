@@ -38,9 +38,10 @@ export default function SalesPage() {
         
           const groupedCustomers = {
             pending: customersList.filter(customer => customer.Status === 'Pending'),
-            Lost: customersList.filter(customer => customer.Status === 'Lost'),
             verified: customersList.filter(customer => customer.Status === 'Verified'),
-            Won: customersList.filter(customer => customer.Status === 'Won')
+            Won: customersList.filter(customer => customer.Status === 'Won'),
+            Lost: customersList.filter(customer => customer.Status === 'Lost'),
+
           };
           setCustomers(groupedCustomers);
         } catch (error) {
