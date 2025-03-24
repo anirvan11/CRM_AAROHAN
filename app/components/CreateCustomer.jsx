@@ -44,7 +44,6 @@ const AddCustomerForm = () => {
             Role: doc.data().Role,
             Branch: doc.data().Branch,
           }))
-          .filter((user) => user.Role !== "Admin");
         setUsers(userList);
       } catch (error) {
         console.error("Error fetching users:", error);

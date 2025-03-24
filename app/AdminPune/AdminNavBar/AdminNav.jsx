@@ -77,6 +77,12 @@ const AdminNav = () => {
               Home
             </Link>
             <Link
+              href="../AdminPune/AdminDashboard"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
+              Dashboard
+            </Link>
+            <Link
               href="../AdminPune/AdminContacts"
               className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
             >
@@ -93,6 +99,12 @@ const AdminNav = () => {
               className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
             >
               Report
+            </Link>
+            <Link
+              href="../AdminPune/AdminTasks"
+              className="text-white px-4 py-2 block hover:bg-blue-400 rounded font-bold uppercase"
+            >
+              Tasks
             </Link>
           </div>
           <div className={`hidden lg:flex items-center ${isNavOpen ? 'block' : 'hidden'}`}>
