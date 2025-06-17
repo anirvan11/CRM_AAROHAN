@@ -6,12 +6,15 @@ import { onAuthStateChanged } from 'firebase/auth';
 import AdminNav from "../AdminNavBar/AdminNav";
 import CreateUser from "../../components/CreateUser";
 import AddCustomer from "../../components/CreateCustomer";
+import ChangeLead from "@/app/components/ChangeLead";
 
 const Home = () => {
   const [showUserForm, setShowUserForm] = useState(false);
   const [showCustomerForm, setShowCustomerForm] = useState(false);
   const [pendingCustomers, setPendingCustomers] = useState([]);
   const [userBranch, setUserBranch] = useState(null);
+  const [showChangeLead, setShowChangeLead] = useState(false);
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -122,6 +125,17 @@ const Home = () => {
         >
           {showCustomerForm ? "Close" : "ADD Lead"}
         </button>
+        {/* Blue "Change Lead" button */}
+        <button
+          onClick={() => {
+            setShowChangeLead(!showChangeLead);
+            setShowCustomerForm(false);
+            setShowUserForm(false);
+          }}
+        className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition"
+      >
+      {showChangeLead ? "Close" : "Change Lead"}
+        </button>
       </div>
 
       {/* Show the user creation form when toggled */}
@@ -129,6 +143,9 @@ const Home = () => {
 
       {/* Show the customer creation form when toggled */}
       {showCustomerForm && <AddCustomer />}
+
+      {showChangeLead && <ChangeLead />}
+
 
       {/* Admin Approval Section */}
       <div className="p-4">

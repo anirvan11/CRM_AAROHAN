@@ -26,6 +26,12 @@ const AdminContacts = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const branchNames = {
+    North: "3s Sales Corporation",
+    North2:"3s Enterprises",
+    Pune:"Aarohan",
+  };
+
   const fetchCustomers = async (userBranch, status = '', resetPagination = false) => {
     if (!userBranch) return;
     
@@ -34,7 +40,6 @@ const AdminContacts = () => {
     try {
       const baseQuery = query(
         collection(db, 'Customers'),
-        where('Branch', '==', userBranch), // Fetch all customers in the branch
         ...(status ? [where('Status', '==', status)] : []),
         orderBy('createdAt', 'desc'),
         limit(8)
@@ -145,6 +150,8 @@ const AdminContacts = () => {
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">Email</th>
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">Last Activity</th>
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">Status</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">Branch</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -175,6 +182,9 @@ const AdminContacts = () => {
                       }`}>
                         {customer.Status}
                       </span>
+                    </td>
+                    <td className="py-3 px-4 text-sm text-gray-700">
+                        {branchNames[customer.Branch] || customer.Branch}
                     </td>
                   </tr>
                 ))}

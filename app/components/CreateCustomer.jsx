@@ -55,12 +55,16 @@ const AddCustomerForm = () => {
 
   useEffect(() => {
     if (formData.Branch) {
-      setFilteredUsers(users.filter((user) => user.Branch === formData.Branch));
+      setFilteredUsers(
+        users.filter(
+          (user) =>
+            user.Branch === formData.Branch || user.Role === "Admin"
+        )
+      );
     } else {
       setFilteredUsers([]);
     }
   }, [formData.Branch, users]);
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 200);
@@ -105,7 +109,21 @@ const AddCustomerForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const requiredFields = [
+      formData.Allocation,
+      formData.Branch,
+      formData["Company Name"],
+      formData.Email,
+      formData.Person,
+      formData.Phone,
+    ];
+  
+    if (requiredFields.some((field) => !field)) {
+      alert("Please fill in all required fields before submitting.");
+      return;
+    }
+  
     try {
       await setDoc(doc(db, "Customers", formData["Company Name"]), {
         ...formData,
@@ -129,7 +147,6 @@ const AddCustomerForm = () => {
       console.error("Error adding customer:", error);
     }
   };
-
   return (
     <div className="mt-0 p-4 bg-white rounded-lg shadow max-w-lg mx-auto">
       <h1 className="text-xl font-bold mb-4 text-black">Add Customer</h1>
